@@ -1,0 +1,12 @@
+inf345-demo-notes - push to the empty GitHub repository (nothing runs on your laptop)
+
+    cd inf345-demo-notes
+    git remote add origin https://github.com/inf345/inf345-demo-notes.git
+    git push -u origin main demo/green-lie
+
+Then open the repository's Actions tab: one run for demo/green-lie should finish GREEN
+(even though a test inside it fails) - that run is DEMO 3. main has no workflow yet;
+DEMO 1 creates it live.
+
+If the push is rejected, the GitHub repository was created with a README:
+    git push -u --force origin main demo/green-lie

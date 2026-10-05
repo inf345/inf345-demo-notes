@@ -1,0 +1,11 @@
+# The same pipeline for GitLab. Save as .gitlab-ci.yml in a GitLab project.
+stages: [test]
+
+tests:
+  stage: test
+  image: python:3.12-slim
+  script:
+    - ./scripts/test.sh
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

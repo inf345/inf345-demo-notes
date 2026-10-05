@@ -1,0 +1,12 @@
+# A workflow that works - and that a security reviewer would reject.
+name: Greet
+on:
+  pull_request_target:
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: tj-actions/changed-files@v46
+      - run: |
+          echo "Thanks for your PR: ${{ github.event.pull_request.title }}"
