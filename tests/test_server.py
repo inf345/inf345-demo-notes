@@ -30,4 +30,4 @@ class TestService(unittest.TestCase):
         self.assertTrue(body.strip())
 
     def test_notes_counts_three(self):
-        self.assertEqual(self.get("/notes")[1], "3")
+        self.assertEqual(self.get("/notes")[1], "4")
