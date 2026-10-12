@@ -1,4 +1,6 @@
 import os
+import signal
+import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 NOTES = ["alpha", "beta", "gamma"]
@@ -31,4 +33,10 @@ def make_server(port):
 
 
 if __name__ == "__main__":
-    make_server(int(os.environ.get("PORT", "8080"))).serve_forever()
+    # docker stop and Kubernetes send SIGTERM. As PID 1, Python ignores it
+    # unless we handle it, and the container is killed 10 seconds later.
+    signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(0))
+    srv = make_server(int(os.environ.get("PORT", "8080")))
+    host, port = srv.server_address[:2]
+    print(f"notes service listening on {host}:{port}")
+    srv.serve_forever()
