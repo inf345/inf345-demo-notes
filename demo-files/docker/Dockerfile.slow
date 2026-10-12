@@ -1,0 +1,14 @@
+# DEMO 3. The same as ../../Dockerfile with the order changed:
+# the source is copied BEFORE the install.
+FROM python:3.14-slim
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . .
+RUN pip install --no-cache-dir -r requirements.txt
+
+ENV PORT=8080
+EXPOSE 8080
+USER 1000:1000
+CMD ["python3", "src/server.py"]

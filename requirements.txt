@@ -1,0 +1,3 @@
+# DEMO ONLY. One heavy library, so the install step takes as long as a real
+# service's install does. The notes service does not import it.
+boto3==1.43.104

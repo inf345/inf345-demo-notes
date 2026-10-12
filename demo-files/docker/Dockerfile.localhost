@@ -1,0 +1,17 @@
+# DEMO 4, break B. The week-three bug, planted on purpose by the sed line:
+# the app listens on 127.0.0.1 inside the container.
+FROM python:3.14-slim
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+RUN sed -i 's/"0.0.0.0"/"127.0.0.1"/' src/server.py
+
+ENV PORT=8080
+EXPOSE 8080
+USER 1000:1000
+CMD ["python3", "src/server.py"]

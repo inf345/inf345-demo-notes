@@ -1,0 +1,16 @@
+# DEMO 4, break C. Starts the app through a script saved with Windows
+# line endings (start-crlf.sh). Linux reads "bash\r" as the program name.
+FROM python:3.14-slim
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+ENV PORT=8080
+EXPOSE 8080
+USER 1000:1000
+CMD ["./demo-files/docker/start-crlf.sh"]
