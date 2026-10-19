@@ -18,3 +18,5 @@ target
 .idea
 .DS_Store
 *.log
+# Caches CI tools leave in the workspace (Trivy keeps its database in .cache)
+.cache

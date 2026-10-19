@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 defaults:
   run:
@@ -34,6 +33,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read # check out the code
+      packages: write  # push the image to ghcr.io
     steps:
       - uses: actions/checkout@v7
         with:
