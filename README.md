@@ -21,3 +21,11 @@ are, `GET /healthz` returns 200 for health checks.
 - `demo-files/docker/` holds lecture-only Dockerfiles: shell-form CMD, slow
   layer order, a typo, the 127.0.0.1 bug, a CRLF start script, a leaked token,
   and a Go version built in one stage and in two. Do not copy them.
+
+## Week 6: Compose and publishing
+- `docker compose up --build --exit-code-from smoke` starts the service and a
+  container that calls its `/healthz` by the service name `app`.
+- The `publish` job in `.github/workflows/ci.yml` builds, smoke-tests, scans
+  and pushes `ghcr.io/<owner>/inf345-demo-notes:<commit SHA>` and `:latest`.
+- `demo-files/week6/` holds the lecture's workflow versions: before, the job
+  to paste (one line missing on purpose), and after.

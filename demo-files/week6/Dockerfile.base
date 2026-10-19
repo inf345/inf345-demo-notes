@@ -1,0 +1,11 @@
+# Week 6 demos only. The service without the demo library, on any Python:
+#   docker build -f demo-files/week6/Dockerfile.base --build-arg PYTHON=3.13 .
+ARG PYTHON=3.14
+FROM python:${PYTHON}-slim
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY src/ ./src/
+ENV PORT=8080
+EXPOSE 8080
+USER 1000:1000
+CMD ["python3", "src/server.py"]
