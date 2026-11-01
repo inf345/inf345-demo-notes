@@ -8,7 +8,7 @@ metadata:
 spec:
   containers:
     - name: notes
-      image: ghcr.io/inf345/inf345-demo-notes:9c781ae53b7fd98c4c02a4274a14fa632956ed3e
+      image: ghcr.io/inf345/inf345-demo-notes:c61b28456861561fbfa65c60bc92a8e2c8fc9667
       env:
         - name: PORT
           value: "8080"

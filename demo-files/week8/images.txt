@@ -1,7 +1,7 @@
 # Every image the Week 8 demos pull. The Sunday checklist loads them into kind,
 # so Monday works without the internet.
 kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
-ghcr.io/inf345/inf345-demo-notes:9c781ae53b7fd98c4c02a4274a14fa632956ed3e
+ghcr.io/inf345/inf345-demo-notes:c61b28456861561fbfa65c60bc92a8e2c8fc9667
 registry.k8s.io/e2e-test-images/agnhost:2.39
 curlimages/curl:8.22.0
 busybox:1.38
