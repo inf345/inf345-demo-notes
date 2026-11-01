@@ -1,0 +1,14 @@
+# Week 8, DEMO 1. A bare Pod: nothing watches it. Delete it and it stays deleted.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: notes-by-hand
+  labels:
+    demo: bare-pod
+spec:
+  containers:
+    - name: notes
+      image: ghcr.io/inf345/inf345-demo-notes:9c781ae53b7fd98c4c02a4274a14fa632956ed3e
+      env:
+        - name: PORT
+          value: "8080"

@@ -1,0 +1,13 @@
+# Week 8, DEMO 2. The same Service with ONE letter missing in the selector.
+# kubectl accepts it, "get svc" looks healthy - and it has no endpoints.
+apiVersion: v1
+kind: Service
+metadata:
+  name: notes
+spec:
+  type: ClusterIP
+  selector:
+    app: note
+  ports:
+    - port: 80
+      targetPort: 8080

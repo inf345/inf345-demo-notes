@@ -1,0 +1,12 @@
+# Week 8: one stable name, "notes", in front of whichever Pods carry app=notes.
+apiVersion: v1
+kind: Service
+metadata:
+  name: notes
+spec:
+  type: ClusterIP
+  selector:
+    app: notes              # any ready Pod with this label gets traffic
+  ports:
+    - port: 80              # the Service's port: http://notes/ means port 80
+      targetPort: 8080      # the container's port: the PORT the app listens on

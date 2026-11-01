@@ -1,0 +1,27 @@
+# Week 8: the notes service on Kubernetes - three copies of one exact image.
+# The image is named by a commit SHA, so "what is running?" has one answer.
+# Week 9 adds configuration, a Secret, probes, resources and a security context.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notes
+  labels:
+    app: notes
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: notes            # which Pods this Deployment owns...
+  template:
+    metadata:
+      labels:
+        app: notes          # ...and the label every new Pod gets. They must match.
+    spec:
+      containers:
+        - name: notes
+          image: ghcr.io/inf345/inf345-demo-notes:9c781ae53b7fd98c4c02a4274a14fa632956ed3e
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"

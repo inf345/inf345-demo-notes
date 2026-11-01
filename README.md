@@ -29,3 +29,9 @@ are, `GET /healthz` returns 200 for health checks.
   and pushes `ghcr.io/<owner>/inf345-demo-notes:<commit SHA>` and `:latest`.
 - `demo-files/week6/` holds the lecture's workflow versions: before, the job
   to paste (one line missing on purpose), and after.
+
+## Week 8: Kubernetes
+- `k8s/` runs three copies of the image of one commit, behind a Service called
+  `notes`: `kubectl apply -f k8s/`.
+- `demo-files/week8/` holds lecture-only files: a bare Pod, a Service with a
+  broken selector, and the DNS debugging Pod from the Kubernetes documentation.
