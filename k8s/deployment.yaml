@@ -1,6 +1,7 @@
-# Week 8: the notes service on Kubernetes - three copies of one exact image.
-# The image is named by a commit SHA, so "what is running?" has one answer.
-# Week 9 adds configuration, a Secret, probes, resources and a security context.
+# Week 9: the notes service, M4-complete. Settings from the ConfigMap, a secret from
+# app-secret (which is never in Git), health checks, limits, and no root.
+# Before the first apply on a new cluster:
+#   kubectl create secret generic app-secret --from-literal=API_KEY="$(openssl rand -hex 16)"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -11,17 +12,65 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: notes            # which Pods this Deployment owns...
+      app: notes
   template:
     metadata:
       labels:
-        app: notes          # ...and the label every new Pod gets. They must match.
+        app: notes
     spec:
+      securityContext:
+        runAsNonRoot: true          # refuse to start as root - the image says USER 1000:1000
+        seccompProfile:
+          type: RuntimeDefault      # block rare system calls (Kubernetes does not, by default)
       containers:
         - name: notes
           image: ghcr.io/inf345/inf345-demo-notes:c61b28456861561fbfa65c60bc92a8e2c8fc9667
           ports:
-            - containerPort: 8080
+            - name: http            # probes and the Service use this name, so the number
+              containerPort: 8080   # lives here and in the ConfigMap only
           env:
             - name: PORT
-              value: "8080"
+              valueFrom:
+                configMapKeyRef:
+                  name: notes-config
+                  key: PORT
+            - name: GREETING
+              valueFrom:
+                configMapKeyRef:
+                  name: notes-config
+                  key: GREETING
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret  # NOT in Git: created on the cluster
+                  key: API_KEY
+          readinessProbe:           # "should this Pod get traffic now?"
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 5
+            failureThreshold: 3
+          livenessProbe:            # "is it stuck? then restart it" - slower than readiness
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:               # what the scheduler reserves
+              cpu: 50m
+              memory: 64Mi
+            limits:                 # the ceiling: over the memory limit = OOMKilled
+              cpu: 250m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp             # the only writable folder
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

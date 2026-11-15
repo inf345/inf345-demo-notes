@@ -1,0 +1,75 @@
+# Week 9, DEMO 2. k8s/deployment.yaml with ONE wrong number: liveness asks port 8081.
+# The rollout succeeds (readiness is right) - then the kubelet kills a healthy app.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notes
+  labels:
+    app: notes
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: notes
+  template:
+    metadata:
+      labels:
+        app: notes
+    spec:
+      securityContext:
+        runAsNonRoot: true          # refuse to start as root - the image says USER 1000:1000
+        seccompProfile:
+          type: RuntimeDefault      # block rare system calls (Kubernetes does not, by default)
+      containers:
+        - name: notes
+          image: ghcr.io/inf345/inf345-demo-notes:c61b28456861561fbfa65c60bc92a8e2c8fc9667
+          ports:
+            - name: http            # probes and the Service use this name, so the number
+              containerPort: 8080   # lives here and in the ConfigMap only
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: notes-config
+                  key: PORT
+            - name: GREETING
+              valueFrom:
+                configMapKeyRef:
+                  name: notes-config
+                  key: GREETING
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret  # NOT in Git: created on the cluster
+                  key: API_KEY
+          readinessProbe:           # "should this Pod get traffic now?"
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 5
+            failureThreshold: 3
+          livenessProbe:            # WRONG ON PURPOSE: the app listens on 8080
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 30 # so the rollout finishes first, as in real life
+            periodSeconds: 5
+            failureThreshold: 2
+          resources:
+            requests:               # what the scheduler reserves
+              cpu: 50m
+              memory: 64Mi
+            limits:                 # the ceiling: over the memory limit = OOMKilled
+              cpu: 250m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp             # the only writable folder
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

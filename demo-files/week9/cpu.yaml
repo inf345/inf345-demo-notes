@@ -1,0 +1,20 @@
+# Week 9, RESERVE R1. One image, two CPU limits. Run the same loop in each container:
+#   kubectl exec cpu -c fast -- python3 -c "$W"   and   kubectl exec cpu -c slow -- python3 -c "$W"
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cpu
+spec:
+  containers:
+    - name: slow
+      image: ghcr.io/inf345/inf345-demo-notes:c61b28456861561fbfa65c60bc92a8e2c8fc9667
+      command: ["sleep", "infinity"]
+      resources:
+        requests: {cpu: 100m, memory: 32Mi}
+        limits: {cpu: 100m, memory: 64Mi}     # a tenth of one CPU
+    - name: fast
+      image: ghcr.io/inf345/inf345-demo-notes:c61b28456861561fbfa65c60bc92a8e2c8fc9667
+      command: ["sleep", "infinity"]
+      resources:
+        requests: {cpu: 100m, memory: 32Mi}
+        limits: {cpu: "1", memory: 64Mi}      # one whole CPU

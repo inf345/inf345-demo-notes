@@ -1,0 +1,17 @@
+# Week 9, DEMO 4. Asks for 200 MiB with a 64 MiB memory limit: OOMKilled, exit code 137.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hungry
+spec:
+  containers:
+    - name: hungry
+      image: ghcr.io/inf345/inf345-demo-notes:c61b28456861561fbfa65c60bc92a8e2c8fc9667
+      command: ["python3", "-c", "b = bytearray(200 * 1024 * 1024); print('got 200 MiB')"]
+      resources:
+        requests:
+          cpu: 50m
+          memory: 32Mi
+        limits:
+          cpu: 250m
+          memory: 64Mi

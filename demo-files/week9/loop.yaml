@@ -1,0 +1,17 @@
+# Week 9, DEMO 3. A tiny synthetic user: calls the Service about 5 times a second and
+# prints the HTTP status (000 = no answer). Count them: kubectl logs loop --since=60s | sort | uniq -c
+apiVersion: v1
+kind: Pod
+metadata:
+  name: loop
+spec:
+  containers:
+    - name: loop
+      image: curlimages/curl:8.22.0
+      command:
+        - sh
+        - -c
+        - >-
+          while true; do
+          curl -s -o /dev/null -w '%{http_code}\n' --max-time 1 http://notes/healthz;
+          sleep 0.2; done

@@ -1,0 +1,69 @@
+# Week 9, DEMO 3, part A. The app now needs 8 s before it listens, and has NO readiness
+# probe: every new Pod gets traffic at once - watch the loop Pod print 000.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notes
+  labels:
+    app: notes
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: notes
+  template:
+    metadata:
+      labels:
+        app: notes
+    spec:
+      securityContext:
+        runAsNonRoot: true          # refuse to start as root - the image says USER 1000:1000
+        seccompProfile:
+          type: RuntimeDefault      # block rare system calls (Kubernetes does not, by default)
+      containers:
+        - name: notes
+          image: ghcr.io/inf345/inf345-demo-notes:c61b28456861561fbfa65c60bc92a8e2c8fc9667
+          command: ["sh", "-c", "sleep 8; exec python3 src/server.py"]   # 8 s before it listens
+          ports:
+            - name: http            # probes and the Service use this name, so the number
+              containerPort: 8080   # lives here and in the ConfigMap only
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: notes-config
+                  key: PORT
+            - name: GREETING
+              valueFrom:
+                configMapKeyRef:
+                  name: notes-config
+                  key: GREETING
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret  # NOT in Git: created on the cluster
+                  key: API_KEY
+          livenessProbe:            # "is it stuck? then restart it" - slower than readiness
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:               # what the scheduler reserves
+              cpu: 50m
+              memory: 64Mi
+            limits:                 # the ceiling: over the memory limit = OOMKilled
+              cpu: 250m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp             # the only writable folder
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
