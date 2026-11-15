@@ -1,0 +1,7 @@
+# A small chart for YOUR service - stretch goal 1. Not needed for M5.
+apiVersion: v2
+name: notes                     # the chart's name: it appears in "# Source:" lines
+description: One HTTP service from INF 345, as a Helm chart
+type: application
+version: 0.1.0                  # the chart's own version: change it when the templates change
+appVersion: "1.0.0"             # the version of the app inside - for people, not for Helm

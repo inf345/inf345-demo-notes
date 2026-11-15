@@ -1,0 +1,21 @@
+# Week 10: Argo CD deploys k8s/ from this repository and keeps the cluster equal to it.
+# Apply it ONCE, by hand (DEMO 1):  kubectl apply -f argocd/application.yaml
+# After that, a deploy is a commit to main, and a rollback is git revert.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: notes
+  namespace: argocd                   # Argo CD only reads Applications here
+spec:
+  project: default
+  source:                             # WHAT: a repository, a branch, a folder
+    repoURL: https://github.com/inf345/inf345-demo-notes
+    targetRevision: main
+    path: k8s
+  destination:                        # WHERE: this cluster, this namespace
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:                        # pull automatically - nobody presses Sync
+      prune: true                     # deleted from Git -> deleted from the cluster
+      selfHeal: true                  # changed by hand  -> put back

@@ -1,0 +1,9 @@
+# Week 10, RESERVE R2 - prune, live. Copy it into k8s/, commit and push: Argo CD creates it.
+# Revert that commit and push: with prune: true, Argo CD deletes it.
+#   cp demo-files/week10/extra.yaml k8s/extra.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notes-extra
+data:
+  NOTE: "added by a commit, removed by a revert"

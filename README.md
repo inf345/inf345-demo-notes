@@ -35,3 +35,22 @@ are, `GET /healthz` returns 200 for health checks.
   `notes`: `kubectl apply -f k8s/`.
 - `demo-files/week8/` holds lecture-only files: a bare Pod, a Service with a
   broken selector, and the DNS debugging Pod from the Kubernetes documentation.
+
+## Week 10: GitOps
+- Argo CD deploys `k8s/` from this repository: `argocd/application.yaml`, applied once by
+  hand. After that, a deploy is a commit to `main` - nobody runs `kubectl apply` on `k8s/`.
+- `chart/` is the same service as a Helm chart, for the Helm demo. Argo CD does not deploy it:
+  `helm template notes ./chart` shows what it would make.
+- `demo-files/week10/` holds lecture-only files: an Application that deploys a Secret with a
+  placeholder (the mistake the lecture shows - do not copy it), and a ConfigMap for the
+  prune demo.
+
+## Rollback
+The cluster runs what `main` says. To go back, revert the commit that deployed the bad
+version, and push:
+
+    git revert --no-edit <commit>     # a merged pull request: git revert --no-edit -m 1 <merge commit>
+    git push origin main
+
+Argo CD syncs the previous version: at once after a refresh, otherwise within about three
+minutes. Never fix the cluster by hand - self-heal puts Git's version back.

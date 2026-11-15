@@ -6,3 +6,6 @@
 *.py   text eol=lf
 # Week 5 DEMO 4 needs this one file to keep its Windows (CRLF) line endings.
 demo-files/docker/start-crlf.sh -text
+# Week 10: the manifests and the chart's templates, too.
+*.yaml text eol=lf
+*.tpl  text eol=lf

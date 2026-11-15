@@ -1,0 +1,18 @@
+# The values a reader is expected to change. Everything else is in templates/.
+# Week 10 demo: the blanks of the lab's example chart, filled in for the notes service.
+replicaCount: 2
+image:
+  repository: ghcr.io/inf345/inf345-demo-notes
+  tag: "c61b28456861561fbfa65c60bc92a8e2c8fc9667"
+port: "8080"
+settings:
+  GREETING: "Salem"                  # DEMO 4: change it, render again, compare checksum/config
+secretKey: API_KEY
+healthPath: /healthz
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi
