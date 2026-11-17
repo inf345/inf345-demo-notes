@@ -24,7 +24,7 @@ spec:
           type: RuntimeDefault      # block rare system calls (Kubernetes does not, by default)
       containers:
         - name: notes
-          image: ghcr.io/inf345/inf345-demo-notes:c61b28456861561fbfa65c60bc92a8e2c8fc9667
+          image: ghcr.io/inf345/inf345-demo-notes:d5000a3f35b8f511965f17e7d1c9b6f020eef64f
           ports:
             - name: http            # probes and the Service use this name, so the number
               containerPort: 8080   # lives here and in the ConfigMap only
