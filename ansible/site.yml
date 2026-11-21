@@ -1,0 +1,36 @@
+---
+# Week 11 demo: prepare a machine to run the notes service.
+#   ansible-playbook -i ansible/inventory.ini ansible/site.yml
+- name: Prepare a machine for the notes service
+  hosts: notes_servers
+  gather_facts: true
+  vars:
+    app_dir: "{{ ansible_facts.env.HOME }}/inf345-notes"
+    app_port: 8080
+
+  tasks:
+    - name: Say which machine this is
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} runs {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}"
+
+    - name: The app directory exists
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: The config file sets the port
+      ansible.builtin.copy:
+        dest: "{{ app_dir }}/notes.env"
+        content: |
+          PORT={{ app_port }}
+        mode: "0644"
+      notify: Restart the notes service
+
+  handlers:
+    # At work: ansible.builtin.systemd with state=restarted. Here it only
+    # writes one line per restart, so you can count them.
+    - name: Restart the notes service
+      ansible.builtin.shell:
+        cmd: date >> "{{ app_dir }}/restarts.log"
+      changed_when: true

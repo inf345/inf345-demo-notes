@@ -2,3 +2,13 @@ __pycache__/
 *.pyc
 test-output.txt
 .env
+
+# Terraform: state holds real IDs and secrets; .terraform/ is a download cache;
+# tfvars files often hold secrets. COMMIT .terraform.lock.hcl - it pins the
+# provider version and its checksums.
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+*.tfplan
+crash.log

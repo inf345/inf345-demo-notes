@@ -54,3 +54,14 @@ version, and push:
 
 Argo CD syncs the previous version: at once after a refresh, otherwise within about three
 minutes. Never fix the cluster by hand - self-heal puts Git's version back.
+
+## Week 11: infrastructure as code
+- `infra/` runs this service with Terraform and the Docker provider:
+  `cd infra && terraform init && terraform plan && terraform apply`, then
+  `curl "$(terraform output -raw healthz_url)"`. `.terraform.lock.hcl` is
+  committed on purpose; state files never are.
+- `ansible/` prepares a machine for the service. Run it twice - the second
+  run changes nothing: `ansible-playbook -i ansible/inventory.ini ansible/site.yml`.
+- `demo-files/week11/` holds lecture-only files: a version of `infra/` that
+  passes a password (to find it in the state file), a plan for AWS that is
+  never applied, and a playbook task that is not idempotent. Do not copy them.

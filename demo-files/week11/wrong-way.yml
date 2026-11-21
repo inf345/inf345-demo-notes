@@ -1,0 +1,14 @@
+---
+# Week 11 DEMO 5, the break: the same job as the copy task in
+# ansible/site.yml, done with a shell command. Run it twice.
+#   ansible-playbook -i ansible/inventory.ini demo-files/week11/wrong-way.yml
+- name: Write the config file the wrong way
+  hosts: notes_servers
+  gather_facts: true
+  vars:
+    app_dir: "{{ ansible_facts.env.HOME }}/inf345-notes"
+    app_port: 8080
+
+  tasks:
+    - name: Append the port to the config file with echo
+      ansible.builtin.shell: echo "PORT={{ app_port }}" >> "{{ app_dir }}/notes-wrong.env"
